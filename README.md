@@ -11,6 +11,10 @@
 - User added file extensions (most text file formats are already used)
 - Low Resource-Usage: Whoosh and OS, Traceback
 
+##### Requirements:
+- [Whoosh](https://pypi.org/project/Whoosh/)
+- [Python >=3.6](https://www.python.org/downloads/) 
+
 ##### TL;DR:
 - This python script that allows users to search for text in files within a directory
 - Python Search and Indexing using the Whoosh resource
@@ -46,4 +50,4 @@
 - General Optimization and Code Clean-up
 
 ##### Resources:
-- Whoosh (https://whoosh.readthedocs.io/en/latest/index.html)
+- [Whoosh](https://whoosh.readthedocs.io/en/latest/index.html)
