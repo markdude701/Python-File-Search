@@ -1,5 +1,6 @@
 # Python-File-Search
-#### Python Application for searching and displaying text/n-grams within text files (using the Whoosh resource). Used for searching for text within directories of files.
+#### Python Application for searching and displaying text/n-grams within text files (using the Whoosh resource). 
+#### Used for searching for text within directories.
 
 ##### Description
 - A Python 3.6 script allowing the user to select a search directory, and then search for a specific term within the text files of that directory.
@@ -10,7 +11,7 @@
 - User added file extensions (most text file formats are already used)
 - Low Resource-Usage: Whoosh and OS, Traceback
 
-###### TL;DR:
+##### TL;DR:
 - This python script that allows users to search for text in files within a directory
 - Python Search and Indexing using the Whoosh resource
 
@@ -39,9 +40,10 @@
 ```
 ##### ToDo:
 - Complete option 4 (User filtering)
-- 
-
+- Query Suggestions
+- Sorting and Facets
 - Replace console GUI with actual window GUI
+- General Optimization and Code Clean-up
 
 ##### Resources:
 - Whoosh (https://whoosh.readthedocs.io/en/latest/index.html)
