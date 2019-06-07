@@ -2,6 +2,9 @@
 #### Python Application for searching and displaying text/n-grams within text files (using the Whoosh resource). 
 #### Used for searching for text within directories.
 
+#### SEE PROJECT PAGE FOR DETAILS
+- _WORK IN PROGRESS, SOME FEATURES MAY NOT BE FUNCTIONAL AT THIS TIME OR WILL LATER BE REMOVED_
+- _TkInter Integration (WIP), Python Console GUI (Complete and functional)_
 
 ##### Description
 - A Python 3.6 script allowing the user to select a search directory, and then search for a specific term within the text files of that directory.
@@ -20,9 +23,7 @@
 - This python script that allows users to search for text in files within a directory
 - Python Search and Indexing using the Whoosh resource
 
-#### SEE PROJECT PAGE FOR DETAILS
-- _WORK IN PROGRESS, SOME FEATURES MAY NOT BE FUNCTIONAL AT THIS TIME OR WILL LATER BE REMOVED_
-- _TkInter Integration (WIP), Python Console GUI (Complete and functional)_
+
 
 ##### Basic Console GUI:
 ```
