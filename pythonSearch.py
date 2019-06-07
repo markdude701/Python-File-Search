@@ -4,6 +4,8 @@ from whoosh.qparser import QueryParser
 import os, traceback
 
 schema = Schema(title=TEXT(stored=True,sortable=True), path=ID(stored=True), content=TEXT(stored=True))
+if not os.path.exists("indexdir"):
+    os.makedirs("indexdir")
 ix = create_in("indexdir", schema)
 
 path = '.'
@@ -12,21 +14,24 @@ files = []
 results = []
 hit = []
 formatting = " -###############- "
-
+prompt = ">>> "
 docNum = 0
 
 file_types = ['.txt','.lua','.md','.sql','.html','.css','.xml','.rtf']
 
 def close():
     try:
-        sys.exit() # Or something that calls sys.exit()
+        sys.exit()
     except SystemExit as e:
         sys.exit(e)
     except:
-        # Cleanup and reraise. This will print a backtrace.
-        # (Insert your cleanup code here.)
+        #Cleanup and reraise.
         raise
 
+def printF():
+    global formatting
+    print(formatting,formatting,formatting,formatting)
+        
 # r=root, d=directories, f = files
 def collectDocuments():
     try:
@@ -174,11 +179,16 @@ def lineHighlight(stringVar, userSearch):
             print("Loaded",resultsCount,"highlighted instances of searched term!")
     return;
 
-def printF():
-    global formatting
-    print(formatting,formatting,formatting,formatting)
+def fileTypeDisplay():
+    print("Current File Types:")
+    for i in range(len(file_types)):
+        print(file_types[i])
+    printF()
 
-
+def rebuildIndex():
+    collectDocuments()
+    writerFiles()
+    
 userMenu = 0
 try:    
     
@@ -195,17 +205,18 @@ try:
     else:
         print("Incorrect Input!")
         
-    collectDocuments()
-    writerFiles()
+    rebuildIndex()
     while (userMenu == 4) != True:
-        print(formatting,formatting,"Search Menu",formatting,formatting)
+        print(formatting,formatting," - Search Menu - ",formatting,formatting)
         print("Please Select an Option:")
         print("1. Quick Search - Search for text/n-grams, Return Directory & Number of Searched Instances")
         print("2. Specific File Search - Search for text, Return Directory & Line Number & Text")
-        print("3. ")
-        print("4. Exit")
-        print(formatting,formatting,"©Markdude701",formatting,formatting)
-        userMenu = input(">>> ")
+        print("3. Add Searchable File Type")
+        print("4. Filter Documents containing term")
+        print("5. Rebuild Index")
+        print("6. Exit")
+        print(formatting,formatting,"github.com/markdude701",formatting,formatting)
+        userMenu = input(prompt)
         printF()
         if userMenu == "1":
             userSearch = input("Enter Search Term:")
@@ -222,7 +233,19 @@ try:
             userHighlight = input("Highlight Searched Term? (Y/N)")
             if userHighlight == "Y":
                 lineHighlight(userSearch, userDoc)
-        elif userMenu == "4" or userMenu.upper() == "QUIT" or userMenu.upper() == "EXIT":
+        elif userMenu == "3":
+            userFileInput = ''
+            fileTypeDisplay()
+            print("Enter in new file type (ex .html), or quit to return")
+            while (userFileInput.upper() != "QUIT"):
+                userFileInput = input(prompt)
+                if userFileInput.upper() != "QUIT":
+                    file_types.append(userFileInput)
+                fileTypeDisplay()
+            rebuildIndex()
+        elif userMenu == "5":
+            rebuildIndex()
+        elif userMenu == "6" or userMenu.upper() == "QUIT" or userMenu.upper() == "EXIT":
             print("Goodbye!")
             break
         else:
