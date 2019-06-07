@@ -1,21 +1,16 @@
 # Security Policy
 
-## Supported Versions
+## Supported Python Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 3.7.3   | :white_check_mark: |
+| 3.6.0   | :white_check_mark: |
+| < 3.5   | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Take a look at the Issues Section at top Nav bar of Github.
+If you have specific questions or would like to contribute on the project, consider forking or doing a pull request.
+Contact me at mark.a.makowski@gmail.com
