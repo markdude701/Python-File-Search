@@ -3,6 +3,7 @@ from whoosh.fields import *
 from whoosh.qparser import QueryParser
 import os, traceback
 import time, sched
+import array as arr
 import tkinter as tk 
 from tkinter import * # python 3
 from tkinter import font  as tkfont # python 3
@@ -19,6 +20,7 @@ hit = []
 formatting = " -###############- "
 prompt = ">>> "
 docNum = 0
+documentResults = []
 s = sched.scheduler(time.time, time.sleep)
 #dirText = ''
 #dirText = StringVar()
@@ -97,9 +99,10 @@ def writerFiles():
         return;
 
 def searchDocuments(stringVar):
+    global results
+    global hit
+    global documentResults
     try:
-        global results
-        global hit
         instances = 0
         searcher = ix.searcher()
         queryContent = QueryParser("content", ix.schema)
@@ -113,15 +116,27 @@ def searchDocuments(stringVar):
         try:
             found = results.scored_length()
             if results.has_exact_length():
-                print("Displaying", found, "of exactly", len(results), "documents")
+                #print("Displaying", found, "of exactly", len(results), "documents")
+                displayTagStr = ("Displaying", found, "of exactly", len(results), "documents\n")
+                #displayTag = [displayTagStr]
+                #print(displayTag
+                #print(displayTagStr)
+                documentResults.append(str(displayTagStr))
             else:
                 low = results.estimated_min_length()
                 high = results.estimated_length()
-                print("Displaying", found, " between ", low, "and", high, "documents")
-            print("\n")
-            print("Titles Found:")
-            for hit in results:
-                print("(#",hit["title"],") - Path:", hit["path"])
+                #print("Displaying", found, " between ", low, "and", high, "documents")
+                displayTagStr = ("Displaying", found, "between", low, "and", high, "documents")
+                #print(displayTagStr)
+                documentResults.append(displayTagStr)
+            documentResults.append("\n")
+            #print("Titles Found:")
+            documentResults.append("Titles Found:")
+            appstr = ""
+            appStr2 = ""
+            for hit in ((results)):
+                appStr = str("(#" + hit["title"] + ") - Path:" + hit["path"])
+                documentResults.append(appStr)
                 if path == '.':
                     with open("." + hit["path"]) as myFile:
                         for num, line in enumerate(myFile, 1):
@@ -132,14 +147,20 @@ def searchDocuments(stringVar):
                         for num, line in enumerate(myFile, 1):
                             if ((stringVar).upper()) in str(line).upper():
                                 instances += 1
-
-                print ('Number of Instances:', instances,'\n')
+                appStr2 = str("Number of Instances: " + str(instances))
+                documentResults.append(appStr2)
                 instances = 0
-        except:
-            print("Exception in Display")
+        #except Exception as e:
+            #print("Exception in Display:",e)
+        except SyntaxError as e:
+            print("SearchDocuments syn Error:",e)
+        except Exception as e:
+            print("Error in searchDocuments:",e)
         return;
     #searcher.close()
 
+    
+    
 def numInstances(myFile,instances):
     for num, line in enumerate(myFile, 1):
         if str(stringVar) in line:
@@ -201,10 +222,12 @@ def fileTypeDisplay():
     for i in range(len(file_types)):
         print(file_types[i])
     printF()
+    return;
 
 def rebuildIndex():
     collectDocuments()
     writerFiles()
+    return;
     
 
     
@@ -245,11 +268,12 @@ class PySearch(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("StartPage")
-
+        return;
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         frame.tkraise()
+        return;
 
 
 
@@ -259,8 +283,11 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         def startPageOne():
             controller.show_frame("PageOne")
+            rebuildIndex()
+            return;
         def startPageTwo():
             controller.show_frame("PageTwo")
+            return;
             
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -300,6 +327,7 @@ class PageTwo(tk.Frame):
                 controller.show_frame("StartPage")
             print(inputValue)
             print(path)
+        return;
 
         
 
@@ -315,7 +343,7 @@ class PageOne(tk.Frame):
         
         
         
-        
+        ###################################### WIP #################################
         #dirLabel = ""
         #dirLabel.set("Directory:" + path)
         #dirLabeler = dirLabel.get()
@@ -325,7 +353,7 @@ class PageOne(tk.Frame):
         label = tk.Label(self, text="Menu", font=controller.title_font)
         dirLabels = tk.Label(self,  text = dirText)
         
-        
+        #############################################################################
         
         
         label.pack(side="top", fill="x", pady=10)
@@ -354,38 +382,76 @@ class PageOne(tk.Frame):
         
 class PageThree(tk.Frame):
     def __init__(self, parent, controller):
+        global documentResults
         
+        def populateListbox(lstt):
+            listbox.insert("end", *lstt)
+            return;
         
+        def retrieve_input(textBox):
+            inputValue=textBox.get()
+            return(inputValue)
+            #controller.show_frame("PageFour")
+        
+        def startSearch(textBox,resultsBox):
+            #controller.show_frame("PageOne")
+            searchDocuments(retrieve_input(textBox))
+            printResults(documentResults,resultsBox)
+            #print(documentResults)
+            return;
+            
+            
+        def printResults(lst, resultsBox):
+            #resultsBox.insert("end","1")
+            #resultsBox.insert("end",lst)
+            for i in range(len(lst)):
+                resultsBox.insert("end",lst[i])
+            return;
+        
+        def returnButton(resultsBox):
+            controller.show_frame("PageOne")
+            resultsBox.delete(0,"end")
+            return;
+        
+        def clearBtnDef(resultsBox):
+            resultsBox.delete(0,"end")
+            for i in range(len(lst)):
+                resultsBox.delete(i,'end')
+            return;
+            
+            
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Enter a Search Term:", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
+        scrollbar = Scrollbar(self)
+        scrollbar.pack(side=RIGHT, fill=Y)
         textBox=tk.Entry(self)
         searchBtn = tk.Button(self, text="Search",
-                           command=lambda: retrieve_input())
+                           command= lambda:startSearch(textBox,resultsBox))
+        clearBtn = tk.Button(self, text="Clear",
+                           command=lambda:clearBtnDef(resultsBox))
         returnBtn = tk.Button(self, text="Return",
-                           command=lambda: controller.show_frame("StartPage"))
-        results = tk.Listbox(self)
+                           command=lambda:returnButton(resultsBox))
+        resultsBox = tk.Listbox(self,width=50,yscrollcommand = scrollbar.set)
+        
+        
         textBox.pack()
         searchBtn.pack()
+        clearBtn.pack()
         returnBtn.pack()
-        results.pack()
+        resultsBox.pack()
         
-        def populateListbox(lstt):
-            listbox.insert("end", *lstt)
         
-        def retrieve_input():
-            inputValue=textBox.get()
-            print(inputValue)
-            controller.show_frame("PageFour")
         
-class PageFour(tk.Frame):
+class PageExample(tk.Frame):
     def __init__(self, parent, controller):
+                
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="Results:", font=controller.title_font)
+        label = tk.Label(self, text="ExampleLabel:", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
-        button = tk.Button(self, text="Go to the start page",
+        button = tk.Button(self, text="BUTTON!",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
         
