@@ -23,7 +23,8 @@
 - This python script that allows users to search for text in files within a directory
 - Python Search and Indexing using the Whoosh resource
 
-
+##### Tkinter GUI:
+- Will be added when in final stages of Tkinter implementation stage
 
 ##### Basic Console GUI:
 ```
@@ -49,10 +50,9 @@
 
 ```
 ##### ToDo:
-- Complete option 4 (User filtering)
 - Query Suggestions
 - Sorting and Facets
-- Replace console GUI with actual window GUI
+- Replace console GUI with actual window GUI - Started with Tkinter
 - General Optimization and Code Clean-up
 
 ##### Resources:
