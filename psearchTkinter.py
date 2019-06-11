@@ -21,6 +21,7 @@ formatting = " -###############- "
 prompt = ">>> "
 docNum = 0
 documentResults = []
+usrSearchTerm = ""
 s = sched.scheduler(time.time, time.sleep)
 #dirText = ''
 #dirText = StringVar()
@@ -63,7 +64,9 @@ def collectDocuments():
                         files.append(os.path.join(r, file))
                         totalDocs += 1
     finally:
-        print(totalDocs," Files Indexed")
+        indexResults = (str(totalDocs) + " Files Indexed")
+        documentResults.append(indexResults)
+        #print(totalDocs," Files Indexed")
         return;
 
 def writerFiles():
@@ -173,13 +176,17 @@ def lineReturn(stringVar, userSearch):
     resultsCount = 0
     for hit in results:
         if hit["title"] == userSearch:
-            print("Searched term",stringVar,"in",hit["path"])
+            #print("Searched term",stringVar,"in",hit["path"])
+            searchStr = str(("Searched term",stringVar,"in",hit["path"]))
+            documentResults.append(searchStr)
             print()
             if path == '.':
                 with open("." + hit["path"]) as myFile:
                     for num, line in enumerate(myFile, 1):
                         if (str(stringVar).upper()) in str(line).upper():
-                            print("Found on line", num," - ", str(line))
+                            searchStr = str("Found on line", num," - ", str(line))
+                            documentResults.append(searchStr)
+                            #print("Found on line", num," - ", str(line))
                             #print(hit.highlights("content"))
                             resultsCount += 1
             else:
@@ -236,8 +243,21 @@ def rebuildIndex():
     
     #######################################################################################################
     
-    
-    
+def retrieve_input(textBox):
+    inputValue=textBox.get()
+    return(inputValue)
+    #controller.show_frame("PageFour")   
+
+def populateListbox(lstt):
+    listbox.insert("end", *lstt)
+    return;   
+
+def printResults(lst, resultsBox):
+    #resultsBox.insert("end","1")
+    #resultsBox.insert("end",lst)
+    for i in range(len(lst)):
+        resultsBox.insert("end",lst[i])
+    return;
     
 
 class PySearch(tk.Tk):
@@ -257,7 +277,7 @@ class PySearch(tk.Tk):
         self.title("Py-Search by Markdude701")
 
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo, PageThree, PageFour):
+        for F in (StartPage, PageOne, PageTwo, PageThree, PageLine):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -383,31 +403,16 @@ class PageOne(tk.Frame):
 class PageThree(tk.Frame):
     def __init__(self, parent, controller):
         global documentResults
-        
-        def populateListbox(lstt):
-            listbox.insert("end", *lstt)
-            return;
-        
-        def retrieve_input(textBox):
-            inputValue=textBox.get()
-            return(inputValue)
-            #controller.show_frame("PageFour")
+        global usrSearchTerm
         
         def startSearch(textBox,resultsBox):
             #controller.show_frame("PageOne")
             searchDocuments(retrieve_input(textBox))
+            usrSearchTerm = retrieve_input(textBox)
             printResults(documentResults,resultsBox)
             #print(documentResults)
             return;
-            
-            
-        def printResults(lst, resultsBox):
-            #resultsBox.insert("end","1")
-            #resultsBox.insert("end",lst)
-            for i in range(len(lst)):
-                resultsBox.insert("end",lst[i])
-            return;
-        
+
         def returnButton(resultsBox):
             controller.show_frame("PageOne")
             resultsBox.delete(0,"end")
@@ -415,9 +420,13 @@ class PageThree(tk.Frame):
         
         def clearBtnDef(resultsBox):
             resultsBox.delete(0,"end")
-            for i in range(len(lst)):
+            for i in range(len(documentResults)):
                 resultsBox.delete(i,'end')
             return;
+        def lineSearchDef():
+            controller.show_frame("PageLine")
+            return;
+        
             
             
         tk.Frame.__init__(self, parent)
@@ -431,6 +440,8 @@ class PageThree(tk.Frame):
                            command= lambda:startSearch(textBox,resultsBox))
         clearBtn = tk.Button(self, text="Clear",
                            command=lambda:clearBtnDef(resultsBox))
+        lineBtn = tk.Button(self, text="Line Search",
+                           command=lambda:lineSearchDef())
         returnBtn = tk.Button(self, text="Return",
                            command=lambda:returnButton(resultsBox))
         resultsBox = tk.Listbox(self,width=50,yscrollcommand = scrollbar.set)
@@ -438,11 +449,67 @@ class PageThree(tk.Frame):
         
         textBox.pack()
         searchBtn.pack()
+        lineBtn.pack()
         clearBtn.pack()
         returnBtn.pack()
         resultsBox.pack()
+
         
         
+        
+class PageLine(tk.Frame):
+    def __init__(self, parent, controller):
+        global usrSearchTerm
+        def returnButton(resultsBox):
+            controller.show_frame("PageThree")
+            resultsBox.delete(0,"end")
+            return;
+        def startSearch(resultsBox):
+            #controller.show_frame("PageOne")
+            searchDocuments(usrSearchTerm)
+            printResults(documentResults,resultsBox)
+            #print(documentResults)
+            return;
+        def startLineSearch(textBox,resultsBox):
+            
+            printResults(documentResults,resultsBox)
+            return;
+        
+        
+        
+        
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        
+        label = tk.Label(self, text="Enter a Document Number:", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        scrollbar = Scrollbar(self)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        textBox=tk.Entry(self)
+        searchBtn = tk.Button(self, text="Select",
+                           command= lambda:startLineSearch(textBox,resultsBox))
+        #clearBtn = tk.Button(self, text="Clear",
+                           #command=lambda:clearBtnDef(resultsBox))
+        returnBtn = tk.Button(self, text="Return",
+                           command=lambda:returnButton(resultsBox))
+        resultsBox = tk.Listbox(self,width=50,yscrollcommand = scrollbar.set)
+        
+        
+        textBox.pack()
+        searchBtn.pack()
+        #clearBtn.pack()
+        returnBtn.pack()
+        resultsBox.pack()
+        lambda: startSearch(usrSearchTerm)
+
+
+
+
+
+
+
+
+
         
 class PageExample(tk.Frame):
     def __init__(self, parent, controller):
