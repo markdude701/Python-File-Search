@@ -4,7 +4,7 @@
 
 #### SEE PROJECT PAGE FOR DETAILS
 - _WORK IN PROGRESS, SOME FEATURES MAY NOT BE FUNCTIONAL AT THIS TIME OR WILL LATER BE REMOVED_
-- _ Python Console GUI (Complete and functional, see pythonSearch.py)_
+- _Python Console GUI (Complete and functional, see pythonSearch.py)_
 - _TkInter Integration (WIP)_
 
 ##### Description
