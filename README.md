@@ -4,7 +4,8 @@
 
 #### SEE PROJECT PAGE FOR DETAILS
 - _WORK IN PROGRESS, SOME FEATURES MAY NOT BE FUNCTIONAL AT THIS TIME OR WILL LATER BE REMOVED_
-- _TkInter Integration (WIP), Python Console GUI (Complete and functional)_
+- _ Python Console GUI (Complete and functional, see pythonSearch.py)_
+- _TkInter Integration (WIP)_
 
 ##### Description
 - A Python 3.6 script allowing the user to select a search directory, and then search for a specific term within the text files of that directory.
